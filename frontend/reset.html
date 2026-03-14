@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreInventory - Reset Password</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary: #0ea5e9;
+        --accent: #f59e0b;
+        --text-dark: #0f172a;
+        --text-light: #64748b;
+        --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --card: #ffffff;
+        --border: rgba(15, 23, 42, 0.08);
+        --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+        background: var(--bg-gradient);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        overflow: auto;
+    }
+
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+        animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-10px) rotate(1deg); }
+        66% { transform: translateY(10px) rotate(-1deg); }
+    }
+
+    .card {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background: var(--card);
+        padding: 64px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .form h2 {
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 14px;
+        color: var(--text-dark);
+        text-align: center;
+    }
+
+    .form p {
+        color: var(--text-light);
+        margin-bottom: 32px;
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 14px 16px 14px 46px;
+        font-size: 15px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(245, 247, 255, 0.9);
+        transition: all 0.25s ease;
+    }
+
+    .input-group input:focus {
+        outline: none;
+        border-color: rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.14);
+        background: #ffffff;
+        transform: scale(1.02);
+    }
+
+    .input-group .icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(100, 116, 139, 0.75);
+        font-size: 16px;
+        pointer-events: none;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 15px 18px;
+        font-size: 16px;
+        font-weight: 700;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 16px 30px rgba(99, 102, 241, 0.25);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+    }
+
+    .meta {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 15px;
+        color: var(--text-light);
+    }
+
+    .meta a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .message {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: var(--text-light);
+    }
+</style>
+
+<body>
+    <div class="card">
+        <form class="form" id="resetForm">
+            <h2>Reset your password</h2>
+            <p>Enter your email address and we'll send you a one-time password (OTP) to reset your password.</p>
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <span class="icon">📧</span>
+                <input id="email" type="email" placeholder="name@company.com" required>
+            </div>
+
+            <button class="btn" type="submit">Send OTP</button>
+
+            <div class="meta">
+                <a href="login.html">Back to login</a>
+            </div>
+
+            <div class="message" id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            if (email) {
+                // Check if user exists
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const userExists = users.find(user => user.email === email);
+
+                if (!userExists) {
+                    document.getElementById('message').innerHTML = '<p style="color: red;">No account found with this email address.</p>';
+                    return;
+                }
+
+                // Simulate sending OTP
+                const otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+                localStorage.setItem('resetEmail', email);
+                localStorage.setItem('resetOTP', otp);
+                localStorage.setItem('otpTimestamp', Date.now()); // For expiration simulation
+
+                // Show message (in real app, this would be an email)
+                document.getElementById('message').innerHTML = `
+                    <p style="color: green;">OTP sent to ${email}!</p>
+                    <p>For demo: Your OTP is <strong>${otp}</strong></p>
+                    <p><a href="otp.html">Continue to enter OTP</a></p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
