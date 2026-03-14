@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Management - CoreInventory</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a7bd2, #7f53ac);
+            color: #2c2c2c;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            padding: 12px 0;
+        }
+
+        .toolbar a {
+            color: white;
+            padding: 10px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.15s ease, background 0.2s ease;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .toolbar a:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .stock-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .stock-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .stock-header h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .stock-content {
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 35px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f4f5fb;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .stock-level {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .stock-high {
+            background: rgba(102, 126, 234, 0.16);
+            color: #2b2d8a;
+        }
+
+        .stock-medium {
+            background: rgba(255, 193, 7, 0.16);
+            color: #7a5c00;
+        }
+
+        .stock-low {
+            background: rgba(220, 53, 69, 0.16);
+            color: #7a2130;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-title::before {
+            content: '➕';
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        select, input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.15s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .product-preview {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .product-preview h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .preview-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .preview-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .preview-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .highlight {
+            animation: highlight 2s ease-out;
+        }
+
+        @keyframes highlight {
+            0% { background-color: #fff3cd; }
+            100% { background-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toolbar">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="operation.html">Operation</a>
+            <a href="stock.html">Stock</a>
+            <a href="move_history.html">Move History</a>
+            <a href="settings.html">Settings</a>
+        </div>
+
+        <div class="stock-container">
+            <div class="stock-header">
+                <h2>Stock Management</h2>
+                <p>Track inventory, see values, and add stock instantly.</p>
+            </div>
+            <div class="stock-content">
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats cards populate here -->
+                </div>
+
+                <div class="table-container">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>Stock Name</th>
+                                <th>Price per Unit ($)</th>
+                                <th>On Hand Products</th>
+                                <th>Stock Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="form-title">Add / Update Stock</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="product">Product Name</label>
+                            <input type="text" id="product" placeholder="Type product name" list="productList" oninput="updateProductPreview()">
+                            <datalist id="productList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" min="1" placeholder="Enter quantity" oninput="updateStockPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price per Unit ($)</label>
+                            <input type="number" id="price" min="0" step="0.01" placeholder="Enter price (required for new items)">
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button class="btn" onclick="addStock()">Add Stock</button>
+                        </div>
+                    </div>
+
+                    <div class="product-preview" id="productPreview" style="display: none;">
+                        <h4>Product Preview</h4>
+                        <div class="preview-grid">
+                            <div class="preview-item">
+                                <span class="preview-label">Current Stock:</span>
+                                <span class="preview-value" id="currentStock">-</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="preview-label">Price per Unit:</span>
+                                <span class="preview-value" id="unitPrice">$-</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="preview-label">New Stock:</span>
+                                <span class="preview-value" id="newStock">-</span>
+                            </div>
+                            <div class="preview-item">
+                                <span class="preview-label">Total Value:</span>
+                                <span class="preview-value" id="totalValue">$-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity" id="recentActivity">
+                    <h3 class="section-title" style="margin-bottom: 15px;">Recent Activity</h3>
+                    <!-- Activity items will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial products already in inventory
+        let products = [
+            { id: 1, name: 'Gaming Laptop', stock: 45, price: 1299.99, available: true },
+            { id: 2, name: 'Wireless Mouse', stock: 120, price: 49.99, available: true },
+            { id: 3, name: 'Mechanical Keyboard', stock: 65, price: 149.99, available: true },
+            { id: 4, name: '27" Monitor', stock: 25, price: 399.99, available: true },
+            { id: 5, name: 'USB Cable', stock: 200, price: 12.99, available: true },
+            { id: 6, name: 'Headphones', stock: 80, price: 89.99, available: true }
+        ];
+
+        let recentActivities = [];
+
+        function getStockStatus(stock) {
+            if (stock >= 100) return 'high';
+            if (stock >= 50) return 'medium';
+            return 'low';
+        }
+
+        function getStockStatusText(status) {
+            switch (status) {
+                case 'high': return 'In Stock';
+                case 'medium': return 'Low Stock';
+                case 'low': return 'Critical';
+                default: return 'Unknown';
+            }
+        }
+
+        function loadInventory() {
+            const tbody = document.querySelector('#inventoryTable tbody');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const status = getStockStatus(product.stock);
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><strong>${product.name}</strong></td>
+                    <td class="price-cell">$${product.price.toFixed(2)}</td>
+                    <td class="quantity-cell">${product.stock}</td>
+                    <td><span class="stock-level stock-${status}">${getStockStatusText(status)}</span></td>
+                `;
+            });
+
+            updateProductList();
+            updateStats();
+        }
+
+        function updateProductList() {
+            const datalist = document.getElementById('productList');
+            datalist.innerHTML = '';
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.name;
+                datalist.appendChild(option);
+            });
+        }
+
+        function updateStats() {
+            const totalProducts = products.length;
+            const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+            const totalValue = products.reduce((sum, p) => sum + (p.stock * p.price), 0);
+            const availableProducts = products.filter(p => p.available).length;
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalProducts}</div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalStock}</div>
+                    <div class="stat-label">Total Stock</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$${totalValue.toLocaleString()}</div>
+                    <div class="stat-label">Total Value</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${availableProducts}</div>
+                    <div class="stat-label">Available Products</div>
+                </div>
+            `;
+        }
+
+        function addStock() {
+            const productName = document.getElementById('product').value.trim();
+            const qty = parseInt(document.getElementById('quantity').value);
+            const priceInput = document.getElementById('price').value.trim();
+            const price = priceInput ? parseFloat(priceInput) : 0;
+
+            if (!productName) {
+                alert('Please enter a product name.');
+                return;
+            }
+
+            if (isNaN(qty) || qty <= 0) {
+                alert('Please enter a valid quantity.');
+                return;
+            }
+
+            if (priceInput && (isNaN(price) || price < 0)) {
+                alert('Please enter a valid price.');
+                return;
+            }
+
+            let product = products.find(p => p.name.toLowerCase() === productName.toLowerCase());
+
+            if (!product) {
+                // Create new product
+                if (!priceInput || price <= 0) {
+                    alert('Please enter a price for new products.');
+                    return;
+                }
+                const newId = Math.max(...products.map(p => p.id)) + 1;
+                product = {
+                    id: newId,
+                    name: productName,
+                    stock: 0,
+                    price: price,
+                    available: true
+                };
+                products.push(product);
+                updateProductList();
+            } else {
+                // Update existing product price if explicitly provided
+                if (priceInput && price > 0) {
+                    product.price = price;
+                }
+            }
+
+            product.stock += qty;
+
+            recentActivities.unshift({
+                product: product.name,
+                quantity: qty,
+                time: new Date().toLocaleTimeString(),
+            });
+            if (recentActivities.length > 5) recentActivities.pop();
+
+            updateRecentActivity();
+            loadInventory();
+
+            setTimeout(() => {
+                const rows = document.querySelectorAll('#inventoryTable tbody tr');
+                rows.forEach(row => {
+                    const productCell = row.cells[0];
+                    if (productCell && productCell.textContent.toLowerCase() === productName.toLowerCase()) {
+                        row.classList.add('highlight');
+                        setTimeout(() => row.classList.remove('highlight'), 2000);
+                    }
+                });
+            }, 100);
+
+            alert(`Successfully added ${qty} units to ${product.name}. New stock: ${product.stock}`);
+
+            document.getElementById('product').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('price').value = '';
+            document.getElementById('productPreview').style.display = 'none';
+        }
+
+        function updateProductPreview() {
+            const productName = document.getElementById('product').value.trim();
+            const preview = document.getElementById('productPreview');
+
+            if (!productName) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            const product = products.find(p => p.name.toLowerCase() === productName.toLowerCase());
+            if (product) {
+                document.getElementById('currentStock').textContent = product.stock;
+                document.getElementById('unitPrice').textContent = '$' + product.price.toFixed(2);
+                preview.style.display = 'block';
+                updateStockPreview();
+            } else {
+                document.getElementById('currentStock').textContent = '0';
+                document.getElementById('unitPrice').textContent = 'Enter price above';
+                preview.style.display = 'block';
+                updateStockPreview();
+            }
+        }
+
+        function updateStockPreview() {
+            const productName = document.getElementById('product').value.trim();
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+
+            const existingProduct = products.find(p => p.name.toLowerCase() === productName.toLowerCase());
+            const currentStock = existingProduct ? existingProduct.stock : 0;
+            const unitPrice = existingProduct ? existingProduct.price : price;
+
+            const newStock = currentStock + quantity;
+            const totalValue = newStock * unitPrice;
+
+            document.getElementById('newStock').textContent = newStock;
+            document.getElementById('totalValue').textContent = unitPrice > 0 ? '$' + totalValue.toLocaleString() : 'Enter price above';
+        }
+
+        function updateRecentActivity() {
+            const container = document.getElementById('recentActivity');
+            const activityList = recentActivities.map(activity => {
+                return `
+                    <div class="activity-item">
+                        <div class="activity-icon activity-receipt">📦</div>
+                        <div class="activity-details">
+                            <div class="activity-text">${activity.product}: +${activity.quantity} units</div>
+                            <div class="activity-time">${activity.time}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <h3 class="section-title" style="margin-bottom: 15px;">Recent Activity</h3>
+                ${activityList || '<p style="color: #666; font-style: italic;">No recent activity</p>'}
+            `;
+        }
+
+        // Initialize
+        loadInventory();
+        updateRecentActivity();
+    </script>
+</body>
+</html>
