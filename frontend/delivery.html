@@ -1,97 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Delivery - CoreInventory</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <style>
-        .form-container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            max-width: 500px;
-            margin: 40px auto;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            background: #5a6cf0;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-        }
-        button:hover {
-            background: #4a5ce0;
-        }
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .back-link a {
-            color: white;
-            text-decoration: none;
-        }
-    </style>
+
+<meta charset="UTF-8">
+<title>Delivery - CoreInventory</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background: linear-gradient(135deg,#6a7bd2,#7f53ac);
+}
+
+.container{
+width:80%;
+margin:auto;
+padding-top:40px;
+}
+
+.section{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h1{
+text-align:center;
+color:white;
+margin-bottom:40px;
+}
+
+input,select{
+padding:8px;
+margin:8px;
+}
+
+button{
+padding:8px 15px;
+background:#5a6cf0;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #ddd;
+text-align:center;
+}
+
+</style>
+
 </head>
+
 <body>
-    <div class="container">
-        <div class="toolbar">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="operation.html">Operation</a>
-            <a href="stock.html">Stock</a>
-            <a href="move_history.html">Move History</a>
-            <a href="settings.html">Settings</a>
-        </div>
-        <h1 style="text-align:center;color:white;margin-bottom:40px;">Deliver Stock</h1>
-        
-        <div class="form-container">
-            <form id="deliveryForm">
-                <div class="form-group">
-                    <label for="productId">Product ID</label>
-                    <input type="number" id="productId" name="productId" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="quantity">Quantity to Deliver</label>
-                    <input type="number" id="quantity" name="quantity" min="1" required>
-                </div>
-                
-                <button type="submit">Deliver Stock</button>
-            </form>
-        </div>
-        
-        <div class="back-link">
-            <a href="dashboard.html">← Back to Dashboard</a>
-        </div>
-    </div>
-    <script src="../static/js/script.js"></script>
-    <script>
-        document.getElementById('deliveryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = document.getElementById('productId').value;
-            const qty = document.getElementById('quantity').value;
-            alert(`Delivered ${qty} units for product ID ${id}`);
-            // Reset form
-            this.reset();
-        });
-    </script>
+
+<h1>Product Delivery</h1>
+
+<div class="container">
+
+<div class="section">
+
+<h2>Deliver Product</h2>
+
+<input type="text" id="productName" placeholder="Product Name">
+<input type="text" id="sku" placeholder="SKU">
+<input type="number" id="qty" placeholder="Quantity to Deliver">
+
+<br><br>
+
+<button onclick="deliverProduct()">Deliver</button>
+
+</div>
+
+
+<div class="section" style="margin-top:30px;">
+
+<h2>Delivery History</h2>
+
+<table id="deliveryTable">
+
+<tr>
+<th>Product</th>
+<th>SKU</th>
+<th>Delivered Qty</th>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="delivery.js"></script>
+
 </body>
 </html>
