@@ -1,25 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Move History - CoreInventory</title>
-    <link rel="stylesheet" href="../static/css/style.css">
+<meta charset="UTF-8">
+<title>Move History - CoreInventory</title>
+<link rel="stylesheet" href="../static/css/style.css">
+
+<style>
+
+.history-card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+}
+
+th{
+background:#f3f5ff;
+}
+
+.filter-box{
+display:flex;
+gap:20px;
+margin-bottom:20px;
+}
+
+select{
+padding:8px;
+border-radius:6px;
+border:1px solid #ddd;
+}
+
+.empty{
+text-align:center;
+padding:30px;
+color:#777;
+}
+
+</style>
+
 </head>
+
 <body>
-    <div class="container">
-        <div class="toolbar">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="operation.html">Operation</a>
-            <a href="stock.html">Stock</a>
-            <a href="move_history.html">Move History</a>
-            <a href="settings.html">Settings</a>
-        </div>
-        <h1 style="text-align:center;color:white;margin-bottom:40px;">Movement History</h1>
-        <div style="background:white;padding:40px;border-radius:12px;text-align:center;">
-            <h2>Movement History Page</h2>
-            <p>This page is under development.</p>
-            <a href="dashboard.html">Back to Dashboard</a>
-        </div>
-    </div>
+
+<div class="container">
+
+<div class="toolbar">
+<a href="dashboard.html">Dashboard</a>
+<a href="operation.html">Operation</a>
+<a href="stock.html">Stock</a>
+<a href="move_history.html">Move History</a>
+<a href="settings.html">Settings</a>
+</div>
+
+<h1 style="text-align:center;color:white;margin-bottom:40px;">Movement History</h1>
+
+<div class="history-card">
+
+<div class="filter-box">
+
+<div>
+<label>Type</label>
+<select id="filterType">
+<option value="">All</option>
+<option value="IN">IN</option>
+<option value="OUT">OUT</option>
+<option value="MOVE">MOVE</option>
+</select>
+</div>
+
+</div>
+
+<table>
+
+<thead>
+<tr>
+<th>Product</th>
+<th>From</th>
+<th>To</th>
+<th>Quantity</th>
+<th>Type</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="moveTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let moves = JSON.parse(localStorage.getItem("moves")) || [];
+
+function renderMoves(){
+
+let typeFilter = document.getElementById("filterType").value;
+
+let filtered = moves.filter(m=>{
+
+return !typeFilter || m.type===typeFilter;
+
+});
+
+let table = document.getElementById("moveTable");
+
+if(filtered.length===0){
+
+table.innerHTML = `
+<tr>
+<td colspan="6" class="empty">No movement records found</td>
+</tr>
+`;
+
+return;
+
+}
+
+table.innerHTML = filtered.map(m=>`
+
+<tr>
+<td>${m.product}</td>
+<td>${m.from}</td>
+<td>${m.to}</td>
+<td>${m.qty}</td>
+<td>${m.type}</td>
+<td>${m.date}</td>
+</tr>
+
+`).join("");
+
+}
+
+document.getElementById("filterType").onchange = renderMoves;
+
+renderMoves();
+
+</script>
+
 </body>
 </html>
